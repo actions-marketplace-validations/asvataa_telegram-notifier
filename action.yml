@@ -23,6 +23,9 @@ inputs:
   message-id:
     description: "Telegram message id, for first run can be empty"
     required: false
+  chat-id:
+    description: "The telegram chat id"
+    required: true
 outputs:
   message-id:
     description: "Message id of first message"
