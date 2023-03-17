@@ -1,4 +1,4 @@
-name: 'Telegram Action'
+name: 'Telegram notification with message editing'
 description: 'Telegram notification for workflow with one message editing'
 author: 'asvataa'
 branding:
