@@ -52,8 +52,11 @@ runs:
           echo $result
         }
   
-        JSON_BASE_D='{"chat_id":"%s","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s"}'
-        JSON_BASE_DF='{"chat_id":"%s","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s","message_id":"%s"}'
+        JSON_BASE_D_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s"}'
+        JSON_BASE_DF_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s","message_id":"%s"}'
+        
+        JSON_BASE_D=${JSON_BASE_D_pre/CHAT_ID/$CHAT_ID}
+        JSON_BASE_DF=${JSON_BASE_DF_pre/CHAT_ID/$CHAT_ID}
         text=""
         message_id=""
         escaped_app_name="$(escape_chars "$APP_NAME")"
