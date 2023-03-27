@@ -52,8 +52,8 @@ runs:
           echo $result
         }
   
-        JSON_BASE_D_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s"}'
-        JSON_BASE_DF_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s","message_id":"%s"}'
+        JSON_BASE_D_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s","silent":"%s"}'
+        JSON_BASE_DF_pre='{"chat_id":"CHAT_ID","disable_web_page_preview":"true","parse_mode":"MarkdownV2","text":"%s","message_id":"%s","silent":"%s"}'
         
         JSON_BASE_D=${JSON_BASE_D_pre/CHAT_ID/$CHAT_ID}
         JSON_BASE_DF=${JSON_BASE_DF_pre/CHAT_ID/$CHAT_ID}
@@ -66,25 +66,29 @@ runs:
   
         deploying)
           text="🤞Deploying\\\.\\\.\\\.\n$actions_run_url\n*$ENV*"
-          JSON_STRING=$(printf "$JSON_BASE_D" "$text")
+          silent_enabled="true"
+          JSON_STRING=$(printf "$JSON_BASE_D" "$text" "$silent_enabled")
           echo "message_id=$(curl --connect-timeout 1 --silent -X POST -H 'Content-Type: application/json' -d "$JSON_STRING" https://api.telegram.org/bot$TG_TOKEN/sendMessage | jq .result.message_id)" >> $GITHUB_OUTPUT
         ;;
   
         success)
           text="✅Deployed\n$actions_run_url\n*$ENV*"
-          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID")
+          silent_enabled="true"
+          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID" "$silent_enabled")
           curl --connect-timeout 1 --silent -X POST -H 'Content-Type: application/json' -d "$JSON_STRING" https://api.telegram.org/bot$TG_TOKEN/editMessageText > /dev/null
         ;;
   
         failure)
           text="❌Failed\n$actions_run_url\n*$ENV*"
-          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID")
+          silent_enabled="false"
+          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID" "$silent_enabled")
           curl --connect-timeout 1 --silent -X POST -H 'Content-Type: application/json' -d "$JSON_STRING" https://api.telegram.org/bot$TG_TOKEN/editMessageText > /dev/null
         ;;
   
         cancelled)
           text="❌Cancelled\n$actions_run_url\n*$ENV*"
-          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID")
+          silent_enabled="false"
+          JSON_STRING=$(printf "$JSON_BASE_DF" "$text" "$MESSAGE_ID" "$silent_enabled")
           curl --connect-timeout 1 --silent -X POST -H 'Content-Type: application/json' -d "$JSON_STRING" https://api.telegram.org/bot$TG_TOKEN/editMessageText > /dev/null
         ;;
   
